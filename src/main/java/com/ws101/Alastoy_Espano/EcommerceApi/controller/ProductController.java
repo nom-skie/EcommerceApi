@@ -65,5 +65,46 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProduct(
+            @PathVariable int id,
+            @RequestBody Product product){
+        if (product.getName() == null || product.getName().isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Product name is required");
+        }
+        if (product.getPrice() <=0){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Price must be a positive number");
+        }
+        Product updated = productService.updateProduct(id, product);
+        if (updated == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Product with ID" + id + "not found");
+        }
+        return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> patchProduct(
+            @PathVariable int id,
+            @RequestBody Product product) {
+        Product patched = productService.patchProduct(id, product);
+        if (patched == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Product with ID" + id + "not found");
+        }
+        return ResponseEntity.ok(patched);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable int id) {
+        boolean deleted = productService.deleteProduct(id);
+        if(!deleted){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Product with ID" + id + "not found");
+        }
+        return ResponseEntity.noContent().build();
+    }
 
 }
