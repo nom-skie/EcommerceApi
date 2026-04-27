@@ -6,12 +6,20 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service for managing product data in memory.
+ *
+ * @author Alastoy, Españo
+ */
 @Service
 public class ProductService {
 
     private List<Product> productList = new ArrayList<>();
     private int idCounter = 1;
 
+    /**
+     * Initializes the service with sample products.
+     */
     public ProductService() {
         productList.add(new Product(idCounter++, "Apple Airpods Pro 2", "Premium noise-cancelling earbuds", 12490.0, "Electronics", 50, "images/Apple AirPods Pro 2.jpg"));
         productList.add(new Product(idCounter++, "Air Max 270 React", "Lightweight running shoes", 10295.0, "Footwear", 30, "images/Air Max 270 React.jpg"));
@@ -27,20 +35,44 @@ public class ProductService {
         productList.add(new Product(idCounter++, "O.TWO.O Face Waterproof Powder", "Long lasting waterproof face powder", 242.0, "Beauty", 55, "images/face powder.png"));
     }
 
+    /**
+     * Retrieves all products.
+     *
+     * @return a List of all products
+     */
     public List<Product> getAllProducts(){
         return productList;
     }
 
+    /**
+     * Finds a product by its ID.
+     *
+     * @param id the product ID to search for
+     * @return the matching Product, or null if not found
+     */
     public Product getProductById(Integer id){
         return productList.stream().filter(p -> p.getId().equals(id)).findFirst().orElse(null);
     }
 
+    /**
+     * Creates a new product and adds it to the list.
+     *
+     * @param product the product to create
+     * @return the created product with its generated ID
+     */
     public Product createProduct(Product product){
         product.setId(idCounter++);
         productList.add(product);
         return product;
     }
 
+    /**
+     * Replaces an existing product entirely.
+     *
+     * @param id      the ID of the product to replace
+     * @param product the new product data
+     * @return the updated product, or null if not found
+     */
     public Product updateProduct(Integer id, Product product){
         for (int i = 0; i < productList.size(); i++) {
             if (productList.get(i).getId().equals(id)) {
@@ -52,6 +84,13 @@ public class ProductService {
         return null;
     }
 
+    /**
+     * Partially updates a product's fields.
+     *
+     * @param id      the ID of the product to patch
+     * @param product the fields to update (null fields are ignored)
+     * @return the patched product, or null if not found
+     */
     public Product patchProduct(Integer id, Product product){
         Product existing = getProductById(id);
         if (existing == null) return null;
@@ -66,10 +105,23 @@ public class ProductService {
         return existing;
     }
 
+    /**
+     * Deletes a product by ID.
+     *
+     * @param id the ID of the product to delete
+     * @return true if deleted, false if not found
+     */
     public boolean deleteProduct(Integer id){
         return productList.removeIf(p -> p.getId().equals(id));
     }
 
+    /**
+     * Filters products by a given filter type and value.
+     *
+     * @param filterType  the field to filter by (name, category, price)
+     * @param filterValue the value to match against
+     * @return a List of matching products
+     */
     public List<Product> filterProducts(String filterType, String filterValue){
         return productList.stream()
                 .filter(p -> {

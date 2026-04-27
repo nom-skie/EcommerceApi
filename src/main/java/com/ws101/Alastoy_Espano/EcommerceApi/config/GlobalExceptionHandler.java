@@ -9,9 +9,21 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.time.LocalDateTime;
 
+/**
+ * Global exception handler that catches application errors
+ * and returns a standard {@link ErrorResponse}.
+ *
+ * @author Alastoy, Españo
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Handles exceptions and maps them to the appropriate HTTP status code.
+     *
+     * @param ex the thrown exception
+     * @return the error response entity
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex){
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
