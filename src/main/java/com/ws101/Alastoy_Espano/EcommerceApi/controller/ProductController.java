@@ -22,7 +22,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable int id) {
+    public ResponseEntity<?> getProductById(@PathVariable Integer id) {
         Product product = productService.getProductById(id);
         if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -57,7 +57,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Category is required");
         }
-        if (product.getStockQuantity() < 0) {
+        if (product.getStockQuantity() == null || product.getStockQuantity() < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Stock quantity must be non-negative");
         }
@@ -67,7 +67,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(
-            @PathVariable int id,
+            @PathVariable Integer id,
             @RequestBody Product product){
         if (product.getName() == null || product.getName().isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -87,7 +87,7 @@ public class ProductController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> patchProduct(
-            @PathVariable int id,
+            @PathVariable Integer id,
             @RequestBody Product product) {
         Product patched = productService.patchProduct(id, product);
         if (patched == null) {
@@ -98,12 +98,13 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable int id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer id) {
         boolean deleted = productService.deleteProduct(id);
         if(!deleted){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Product with ID" + id + "not found");
         }
+
         return ResponseEntity.noContent().build();
     }
 

@@ -31,8 +31,8 @@ public class ProductService {
         return productList;
     }
 
-    public Product getProductById(int id){
-        return productList.stream().filter(p -> p.getId() == id).findFirst().orElse(null);
+    public Product getProductById(Integer id){
+        return productList.stream().filter(p -> p.getId().equals(id)).findFirst().orElse(null);
     }
 
     public Product createProduct(Product product){
@@ -41,9 +41,9 @@ public class ProductService {
         return product;
     }
 
-    public Product updateProduct(int id, Product product){
+    public Product updateProduct(Integer id, Product product){
         for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getId() ==id) {
+            if (productList.get(i).getId().equals(id)) {
                 product.setId(id);
                 productList.set(i, product);
                 return product;
@@ -52,7 +52,7 @@ public class ProductService {
         return null;
     }
 
-    public Product patchProduct(int id, Product product){
+    public Product patchProduct(Integer id, Product product){
         Product existing = getProductById(id);
         if (existing == null) return null;
 
@@ -60,14 +60,14 @@ public class ProductService {
         if(product.getDescription() != null) existing.setDescription(product.getDescription());
         if(product.getCategory() != null) existing.setCategory(product.getCategory());
         if(product.getPrice() > 0) existing.setPrice(product.getPrice());
-        if(product.getStockQuantity() >= 0) existing.setStockQuantity(product.getStockQuantity());
+        if(product.getStockQuantity() != null && product.getStockQuantity() >= 0) existing.setStockQuantity(product.getStockQuantity());
         if(product.getImageUrl() != null) existing.setImageUrl(product.getImageUrl());
 
         return existing;
     }
 
-    public boolean deleteProduct(int id){
-        return productList.removeIf(p -> p.getId() == id);
+    public boolean deleteProduct(Integer id){
+        return productList.removeIf(p -> p.getId().equals(id));
     }
 
     public List<Product> filterProducts(String filterType, String filterValue){

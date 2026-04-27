@@ -10,11 +10,11 @@ import lombok.*;
 @EqualsAndHashCode
 
 public class Product {
-    private int id;
+    private Integer id;
     private String name;
     private String description;
     private double price;
     private String category;
-    private int stockQuantity;
+    private Integer stockQuantity;
     private String imageUrl;
 }
