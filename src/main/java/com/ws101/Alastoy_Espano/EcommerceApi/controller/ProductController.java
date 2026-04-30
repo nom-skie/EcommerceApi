@@ -42,7 +42,7 @@ public class ProductController {
      * @return the product, or 404 if not found
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable Integer id) {
+    public ResponseEntity<?> getProductById(@PathVariable Long id) {
         Product product = productService.getProductById(id);
         if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -86,7 +86,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Price must be a positive number");
         }
-        if (product.getCategory() == null || product.getCategory().isEmpty()) {
+        if (product.getCategory() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Category is required");
         }
@@ -107,7 +107,7 @@ public class ProductController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(
-            @PathVariable Integer id,
+            @PathVariable Long id,
             @RequestBody Product product){
         if (product.getName() == null || product.getName().isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -134,7 +134,7 @@ public class ProductController {
      */
     @PatchMapping("/{id}")
     public ResponseEntity<?> patchProduct(
-            @PathVariable Integer id,
+            @PathVariable Long id,
             @RequestBody Product product) {
         Product patched = productService.patchProduct(id, product);
         if (patched == null) {
@@ -151,7 +151,7 @@ public class ProductController {
      * @return 204 No Content if deleted, or 404 if not found
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         boolean deleted = productService.deleteProduct(id);
         if(!deleted){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
