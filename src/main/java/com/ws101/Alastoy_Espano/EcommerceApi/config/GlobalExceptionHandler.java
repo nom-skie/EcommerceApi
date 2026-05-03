@@ -1,8 +1,11 @@
 package com.ws101.Alastoy_Espano.EcommerceApi.config;
 
 import com.ws101.Alastoy_Espano.EcommerceApi.model.ErrorResponse;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -33,6 +36,10 @@ public class GlobalExceptionHandler {
         } else if(ex instanceof NullPointerException){
             status = HttpStatus.BAD_REQUEST;
         } else if(ex instanceof MethodArgumentTypeMismatchException){
+            status = HttpStatus.BAD_REQUEST;
+        } else if(ex instanceof EntityNotFoundException){
+            status = HttpStatus.NOT_FOUND;
+        } else if(ex instanceof DataIntegrityViolationException){
             status = HttpStatus.BAD_REQUEST;
         }
 
