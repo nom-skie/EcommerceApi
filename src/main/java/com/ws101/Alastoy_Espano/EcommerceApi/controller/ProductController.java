@@ -120,7 +120,7 @@ public class ProductController {
         Product updated = productService.updateProduct(id, product);
         if (updated == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Product with ID" + id + "not found");
+                    .body("Product with ID " + id + "not found");
         }
         return ResponseEntity.ok(updated);
     }
@@ -139,7 +139,7 @@ public class ProductController {
         Product patched = productService.patchProduct(id, product);
         if (patched == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Product with ID" + id + "not found");
+                    .body("Product with ID " + id + "not found");
         }
         return ResponseEntity.ok(patched);
     }
@@ -155,7 +155,7 @@ public class ProductController {
         boolean deleted = productService.deleteProduct(id);
         if(!deleted){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Product with ID" + id + "not found");
+                    .body("Product with ID " + id + "not found");
         }
 
         return ResponseEntity.noContent().build();

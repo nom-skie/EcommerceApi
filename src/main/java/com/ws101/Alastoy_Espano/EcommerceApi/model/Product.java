@@ -2,6 +2,7 @@ package com.ws101.Alastoy_Espano.EcommerceApi.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * Represents a product in the store.
@@ -47,6 +48,7 @@ public class Product {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @JsonBackReference
     private Category category;
 
     /**
