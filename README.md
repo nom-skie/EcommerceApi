@@ -231,7 +231,7 @@ All errors return this format:
 - No database integration
 - No authentication or authorization
 
-## Pair Programming Sessions
+## Lab 7 Pair Programming Sessions
 
 | Session | Driver | Navigator      |
 |---------|---|----------------|
