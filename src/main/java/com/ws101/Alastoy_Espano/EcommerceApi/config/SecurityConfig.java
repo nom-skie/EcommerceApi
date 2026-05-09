@@ -14,6 +14,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.Customizer;
 
+/**
+ * Configures Spring Security rules for the entire application.
+ * Defines which endpoints are public, which require login,
+ * and which require a specific role.
+ *
+ * @author Alastoy, Españo
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -25,35 +32,56 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
+
+    /**
+     * Defines how passwords are hashed.
+     * BCrypt is the industry standard — it's slow on purpose
+     * to make brute-force attacks harder.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-     @Bean
+
+    /**
+     * Exposes the AuthenticationManager as a bean so we can
+     * use it manually in our register/login endpoints.
+     */
+    @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * The main security rulebook.
+     * Defines access rules for every endpoint in the application.
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
+                        // Public endpoints (no login required)
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
 
-                    .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PATCH, "/api/v1/products/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasRole("ADMIN")
+                        // Admin only
+                        .requestMatchers(HttpMethod.POST, "/api/v1/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasRole("ADMIN")
 
-                    .anyRequest().authenticated()
+                        // EVERYTHING ELSE requires at least being logged in
+                        .anyRequest().authenticated()
 
                 )
-                .formLogin(Customizer.withDefaults())
+
+                // Enables the default /login form page
+                .formLogin(form -> form.defaultSuccessUrl("/api/v1/products", true)
+                        .permitAll())
 
                 .logout(Customizer.withDefaults())
 
