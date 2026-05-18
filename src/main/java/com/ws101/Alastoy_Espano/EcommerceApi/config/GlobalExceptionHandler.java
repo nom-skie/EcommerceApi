@@ -5,12 +5,15 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Global exception handler that catches application errors
@@ -18,9 +21,22 @@ import java.time.LocalDateTime;
  *
  * @author Alastoy, Españo
  */
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
+    // This runs when @Valid fails (e.g. blank username, short password)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationErrors(MethodArgumentNotValidException ex) {
+
+        // Collect all the error messages into a simple list
+        List<String> errors = new ArrayList<>();
+
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            errors.add("Field '" + error.getField() + "': " + error.getDefaultMessage());
+        });
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
     /**
      * Handles exceptions and maps them to the appropriate HTTP status code.
      *
