@@ -4,6 +4,7 @@ import com.ws101.Alastoy_Espano.EcommerceApi.model.Category;
 import com.ws101.Alastoy_Espano.EcommerceApi.repository.CategoryRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -55,6 +56,7 @@ public class CategoryController {
      * @param category the category data
      * @return the created category
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> createCategory(@RequestBody Category category) {
         if (category.getName() == null || category.getName().isEmpty()) {
@@ -71,6 +73,7 @@ public class CategoryController {
      * @param id the category ID
      * @return 204 No Content if deleted, or 404 if not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
         if (!categoryRepository.existsById(id)) {

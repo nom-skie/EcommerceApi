@@ -3,6 +3,7 @@ import com.ws101.Alastoy_Espano.EcommerceApi.model.Product;
 import com.ws101.Alastoy_Espano.EcommerceApi.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -76,6 +77,7 @@ public class ProductController {
      * @param product the product data
      * @return the created product, or 400 if validation fails
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> createProduct(@RequestBody Product product) {
         if (product.getName() == null || product.getName().isEmpty()) {
@@ -105,6 +107,7 @@ public class ProductController {
      * @param product the new product data
      * @return the updated product, or 404 if not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(
             @PathVariable Long id,
@@ -132,6 +135,7 @@ public class ProductController {
      * @param product the fields to update
      * @return the updated product, or 404 if not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<?> patchProduct(
             @PathVariable Long id,
@@ -150,6 +154,7 @@ public class ProductController {
      * @param id the product ID
      * @return 204 No Content if deleted, or 404 if not found
      */
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         boolean deleted = productService.deleteProduct(id);
