@@ -1,6 +1,8 @@
 package com.ws101.Alastoy_Espano.EcommerceApi.controller;
+import com.ws101.Alastoy_Espano.EcommerceApi.dto.ProductRequest;
 import com.ws101.Alastoy_Espano.EcommerceApi.model.Product;
 import com.ws101.Alastoy_Espano.EcommerceApi.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,23 +81,14 @@ public class ProductController {
      */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<?> createProduct(@RequestBody Product product) {
-        if (product.getName() == null || product.getName().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Product name is required");
-        }
-        if (product.getPrice() <= 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Price must be a positive number");
-        }
-        if (product.getCategory() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Category is required");
-        }
-        if (product.getStockQuantity() == null || product.getStockQuantity() < 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Stock quantity must be non-negative");
-        }
+    public ResponseEntity<?> createProduct(@Valid @RequestBody ProductRequest request) {
+        Product product = new Product();
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setCategory(request.getCategory());
+        product.setStockQuantity(request.getStockQuantity());
+        product.setImageUrl(request.getImageUrl());
         Product created = productService.createProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -111,15 +104,14 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updateProduct(
             @PathVariable Long id,
-            @RequestBody Product product){
-        if (product.getName() == null || product.getName().isEmpty()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Product name is required");
-        }
-        if (product.getPrice() <=0){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Price must be a positive number");
-        }
+            @Valid @RequestBody ProductRequest request){
+        Product product = new Product();
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setCategory(request.getCategory());
+        product.setStockQuantity(request.getStockQuantity());
+        product.setImageUrl(request.getImageUrl());
         Product updated = productService.updateProduct(id, product);
         if (updated == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
